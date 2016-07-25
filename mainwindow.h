@@ -17,6 +17,18 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QList<QStringList> listOfPorts;
+
+    //Private functions
+    void get_serial_ports();
+    void setup_connections();
+
+private slots:
+ void update_comport_list();
+ void new_port_selection(int index);
 };
+
+
+
 
 #endif // MAINWINDOW_H
