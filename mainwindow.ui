@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>692</width>
-    <height>597</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>0</y>
       <width>671</width>
-      <height>131</height>
+      <height>151</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -52,7 +52,7 @@
       <string>Connect</string>
      </property>
     </widget>
-    <widget class="QComboBox" name="baudrate">
+    <widget class="QComboBox" name="baudRateBox">
      <property name="geometry">
       <rect>
        <x>230</x>
@@ -62,7 +62,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QComboBox" name="parity">
+    <widget class="QComboBox" name="dataBitsBox">
      <property name="geometry">
       <rect>
        <x>230</x>
@@ -72,7 +72,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QComboBox" name="databit">
+    <widget class="QComboBox" name="parityBox">
      <property name="geometry">
       <rect>
        <x>230</x>
@@ -82,7 +82,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QComboBox" name="stopbit">
+    <widget class="QComboBox" name="stopBitsBox">
      <property name="geometry">
       <rect>
        <x>230</x>
@@ -98,7 +98,7 @@
        <x>350</x>
        <y>10</y>
        <width>301</width>
-       <height>111</height>
+       <height>131</height>
       </rect>
      </property>
      <property name="minimumSize">
@@ -164,6 +164,26 @@
       <string>Update list</string>
      </property>
     </widget>
+    <widget class="QComboBox" name="flowControlBox">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>120</y>
+       <width>104</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="Console" name="uiConsole">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>160</y>
+      <width>321</width>
+      <height>381</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -187,6 +207,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Console</class>
+   <extends>QPlainTextEdit</extends>
+   <header location="global">console.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
