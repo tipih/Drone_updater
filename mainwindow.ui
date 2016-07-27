@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>692</width>
+    <width>981</width>
     <height>608</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>671</width>
+      <width>961</width>
       <height>151</height>
      </rect>
     </property>
@@ -55,7 +55,7 @@
     <widget class="QComboBox" name="baudRateBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>370</x>
        <y>0</y>
        <width>104</width>
        <height>31</height>
@@ -65,7 +65,7 @@
     <widget class="QComboBox" name="dataBitsBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>370</x>
        <y>30</y>
        <width>104</width>
        <height>31</height>
@@ -75,7 +75,7 @@
     <widget class="QComboBox" name="parityBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>370</x>
        <y>60</y>
        <width>104</width>
        <height>31</height>
@@ -85,7 +85,7 @@
     <widget class="QComboBox" name="stopBitsBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>370</x>
        <y>90</y>
        <width>104</width>
        <height>31</height>
@@ -95,7 +95,7 @@
     <widget class="QFrame" name="frame_2">
      <property name="geometry">
       <rect>
-       <x>350</x>
+       <x>650</x>
        <y>10</y>
        <width>301</width>
        <height>131</height>
@@ -161,17 +161,95 @@
       </rect>
      </property>
      <property name="text">
-      <string>Update list</string>
+      <string>Refress comport list</string>
      </property>
     </widget>
     <widget class="QComboBox" name="flowControlBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>370</x>
        <y>120</y>
        <width>104</width>
        <height>31</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="apply_settings">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>110</y>
+       <width>221</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Apply settings</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>5</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Baudrate</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>36</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Databit</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>65</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Parity</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>93</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stopbit</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>125</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Flowcontrol</string>
      </property>
     </widget>
    </widget>
@@ -180,9 +258,22 @@
      <rect>
       <x>360</x>
       <y>160</y>
-      <width>321</width>
+      <width>611</width>
       <height>381</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>160</y>
+      <width>113</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TestSend</string>
     </property>
    </widget>
   </widget>
@@ -191,7 +282,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>692</width>
+     <width>981</width>
      <height>22</height>
     </rect>
    </property>

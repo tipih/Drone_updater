@@ -26,6 +26,7 @@ private:
     QSerialPort *serial;
     Console *console;
     QLabel *status;
+
     struct Settings {
         QString name;
         qint32 baudRate;
@@ -40,6 +41,14 @@ private:
         QString stringFlowControl;
         bool localEchoEnabled;
     };
+    Settings currentSettings;
+
+    struct Pid_values {
+    char p_value;
+    char i_value;
+    char d_value;
+    };
+    Pid_values *currentPid;
 
     //Private functions
     void get_serial_ports();
@@ -47,11 +56,19 @@ private:
     void fillPortsParameters();
     void showStatusMessage(const QString &message);
 
+
 private slots:
  void update_comport_list();
  void new_port_selection(int index);
  void open_serialport();
+ void closeSerialPort();
+ void updateSettings();
 
+ void writeData(const QByteArray &data);
+ void readData();
+ void handleError(QSerialPort::SerialPortError error);
+
+ void on_pushButton_clicked();
 };
 
 
