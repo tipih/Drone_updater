@@ -44,9 +44,15 @@ private:
     Settings currentSettings;
 
     struct Pid_values {
-    char p_value;
-    char i_value;
-    char d_value;
+    float pitch_p_value;
+    float pitch_i_value;
+    float pitch_d_value;
+    float roll_p_value;
+    float roll_i_value;
+    float roll_d_value;
+    float yaw_p_value;
+    float yaw_i_value;
+    float yaw_d_value;
     };
     Pid_values *currentPid;
 
@@ -55,6 +61,7 @@ private:
     void setup_connections();
     void fillPortsParameters();
     void showStatusMessage(const QString &message);
+    QString convert_float_to_hex_to_string(float value);
 
 
 private slots:
@@ -67,6 +74,7 @@ private slots:
  void writeData(const QByteArray &data);
  void readData();
  void handleError(QSerialPort::SerialPortError error);
+ void updatePidValues();
 
  void on_pushButton_clicked();
 };

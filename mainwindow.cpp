@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     status = new QLabel;
     ui->statusBar->addWidget(status);
 
+    currentPid = new Pid_values();
+
     setup_connections();
     get_serial_ports();
     fillPortsParameters();
@@ -70,6 +72,40 @@ void MainWindow::setup_connections()
     //Connection for serial communication
     connect(console, SIGNAL(getData(QByteArray)), this, SLOT(writeData(QByteArray)));
     connect(serial,SIGNAL(readyRead()),this,SLOT(readData()));
+
+    connect(ui->pitch_p_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->pitch_i_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->pitch_d_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+
+    connect(ui->roll_p_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->roll_i_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->roll_d_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+
+    connect(ui->yaw_p_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->yaw_i_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->yaw_d_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+}
+
+QString MainWindow::convert_float_to_hex_to_string(float value)
+{
+qDebug()<<"Input Value" <<value;
+QByteArray array(reinterpret_cast<const char*>(&value), sizeof(value));
+QString return_string="";
+int length = sizeof(value);
+
+for (int a=0;a<length;a++){
+
+    unsigned char myChar = array[a];
+    QString myString = QString::number(myChar);
+
+
+    if (length-a==1)
+        return_string=return_string+myString;
+    else
+        return_string=return_string+myString+",";
+    }
+
+return return_string;
 }
 
 void MainWindow::update_comport_list()
@@ -243,20 +279,68 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 }
 //! [8]
 
+
+void MainWindow::updatePidValues(){
+    qDebug()<<"reading all PID values and updating the array";
+
+    currentPid->pitch_p_value = (float)ui->pitch_p_gain_spin->value();
+    currentPid->pitch_i_value = (float)ui->pitch_i_gain_spin->value();
+    currentPid->pitch_d_value = (float)ui->pitch_d_gain_spin->value();
+
+    currentPid->roll_p_value = (float)ui->roll_p_gain_spin->value();
+    currentPid->roll_i_value = (float)ui->roll_i_gain_spin->value();
+    currentPid->roll_d_value = (float)ui->roll_d_gain_spin->value();
+
+    currentPid->yaw_p_value = (float)ui->yaw_p_gain_spin->value();
+    currentPid->yaw_i_value = (float)ui->yaw_i_gain_spin->value();
+    currentPid->yaw_d_value = (float)ui->yaw_d_gain_spin->value();
+
+    qDebug()<<currentPid;
+}
+
+
 void MainWindow::on_pushButton_clicked()
 {
 
-currentPid = new Pid_values();
-currentPid->p_value=10;
-currentPid->i_value=20;
-currentPid->d_value=30;
+updatePidValues();
+//Build op the string for sending to the RFM2PI via seriel
 
-QString myString=QString::number(currentPid->p_value)+","+QString::number(currentPid->i_value)+","+QString::number(currentPid->d_value)+",s";
-QByteArray packet (myString.toStdString().c_str());
+QString serial_string="";
+
+serial_string = convert_float_to_hex_to_string(currentPid->pitch_p_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_i_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_d_value);
+
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->roll_p_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->roll_i_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->roll_d_value);
+
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->yaw_p_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->yaw_i_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->yaw_d_value);
+
+serial_string=serial_string+","+"s";
+qDebug()<<"String to send "<<serial_string;
+QByteArray array (serial_string.toStdString().c_str());
+
+
+//1,1 = 0x3f8ccccd
+//float f = 1.1f;
+//convert_float_to_hex_to_string(f);
+//unsigned char *chptr;
+//chptr = (unsigned char *) &f;
+// qDebug() <<"1="<<*chptr++<<" 2="<<*chptr++<<"3="<<*chptr++<<"4="<<*chptr++;
+// QByteArray array(reinterpret_cast<const char*>(&f), sizeof(f));
+// qDebug() << array.size();
+//float f2;
+//f2 = *reinterpret_cast<const float*>(array.data());
+//qDebug()<<f2;
+//QString myString=QString::number(currentPid->pitch_p_value)+","+QString::number(currentPid->pitch_i_value)+","+QString::number(currentPid->pitch_d_value)+",s";
+//QByteArray packet (myString.toStdString().c_str());
 
 //char *p = (char*)currentPid; // cast it to char* to make a QByteArray
 //QByteArray packet(p, sizeof(Pid_values));
 
-writeData(packet);
-qDebug() << packet.size();
+writeData(array);
+
 }
