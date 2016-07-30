@@ -4,6 +4,7 @@
 
 #include <QDebug>
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
+static const char update_message_id[] =("00,01");
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -306,8 +307,9 @@ updatePidValues();
 //Build op the string for sending to the RFM2PI via seriel
 
 QString serial_string="";
+serial_string=update_message_id;
 
-serial_string = convert_float_to_hex_to_string(currentPid->pitch_p_value);
+serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_p_value);
 serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_i_value);
 serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_d_value);
 
@@ -323,6 +325,11 @@ serial_string=serial_string+","+"s";
 qDebug()<<"String to send "<<serial_string;
 QByteArray array (serial_string.toStdString().c_str());
 
+
+QByteArray source = QString("3f8ccccd").toUtf8();
+quint16 crc1 = qChecksum(source.data(), source.length());
+qDebug()<<"Bytearray "<<source.data();
+qDebug() <<"crc1" <<crc1;
 
 //1,1 = 0x3f8ccccd
 //float f = 1.1f;
