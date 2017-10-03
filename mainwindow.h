@@ -6,6 +6,7 @@
 #include <QSerialPortInfo>
 #include "console.h"
 #include <QLabel>
+#include "graph.h"
 
 namespace Ui {
 class MainWindow;
@@ -63,6 +64,10 @@ private:
     void showStatusMessage(const QString &message);
     QString convert_float_to_hex_to_string(float value);
 
+private:
+    float converTofloat(QByteArray array,int index);
+    void setup_plot();
+
 
 private slots:
  void update_comport_list();
@@ -75,8 +80,13 @@ private slots:
  void readData();
  void handleError(QSerialPort::SerialPortError error);
  void updatePidValues();
+ void sendPidValue();
 
  void on_pushButton_clicked();
+ void on_Robot_sel_clicked(bool checked);
+ void on_checkBox_clicked(bool checked);
+ void on_lineEdit_returnPressed();
+ void on_asc_show_clicked(bool checked);
 };
 
 

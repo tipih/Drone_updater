@@ -5,6 +5,7 @@
 #include <QDebug>
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
 static const char update_message_id[] =("00,01");
+bool robot_sel = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -155,9 +156,10 @@ void MainWindow::open_serialport()
     {
     if (serial->open(QIODevice::ReadWrite)) {
         console->setEnabled(true);
-        console->setLocalEchoEnabled(false);
+        console->setLocalEchoEnabled(true);
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6").arg(serial->portName()).arg(serial->baudRate()).arg(serial->flowControl()));
         ui->ConnectBtn->setText("Disconnect");
+        ui->checkBox->setChecked(serial->isDataTerminalReady());
 
 
     } else {
@@ -257,6 +259,7 @@ void MainWindow::closeSerialPort()
 //! [6]
 void MainWindow::writeData(const QByteArray &data)
 {
+    qDebug()<<"Data to send "<<data;
     if (serial->isOpen())
         serial->write(data);
 }
@@ -265,8 +268,23 @@ void MainWindow::writeData(const QByteArray &data)
 //! [7]
 void MainWindow::readData()
 {
+
+    int nCnt=serial->bytesAvailable();
+
+
     QByteArray data = serial->readAll();
-    console->putData(data);
+
+if ((nCnt==5)&&(data.at(3)==0x30)&&(data.at(4)==0x30))
+{
+    qDebug()<<data.toHex();
+}
+
+    qDebug()<<data;
+
+    if(ui->asc_show->isChecked())
+        console->putData(data.toHex());
+    else
+         console->putData(data);
 }
 //! [7]
 
@@ -296,8 +314,15 @@ void MainWindow::updatePidValues(){
     currentPid->yaw_i_value = (float)ui->yaw_i_gain_spin->value();
     currentPid->yaw_d_value = (float)ui->yaw_d_gain_spin->value();
 
-    qDebug()<<currentPid;
+    //Send PID pitch value if this is Robot update
+    if (ui->Robot_sel->isChecked())
+        sendPidValue();
+
+
 }
+
+
+
 
 
 void MainWindow::on_pushButton_clicked()
@@ -349,5 +374,110 @@ qDebug() <<"crc1" <<crc1;
 //QByteArray packet(p, sizeof(Pid_values));
 
 writeData(array);
+
+}
+
+void MainWindow::sendPidValue(){
+    QByteArray array;
+    array.append(0x01);
+    array.append( reinterpret_cast<const char*>(&currentPid->pitch_p_value), sizeof(currentPid->pitch_p_value) );
+    array.append( reinterpret_cast<const char*>(&currentPid->pitch_i_value), sizeof(currentPid->pitch_i_value) );
+    array.append( reinterpret_cast<const char*>(&currentPid->pitch_d_value), sizeof(currentPid->pitch_d_value) );
+    array.append(0xff);
+qDebug()<<array.count();
+qDebug()<<converTofloat(array,1);
+
+
+writeData(array);
+
+}
+
+float MainWindow::converTofloat(QByteArray array, int index){
+
+union UStuff
+{
+        float   f;
+        unsigned char   c[0];
+};
+
+UStuff b;
+
+
+
+for (int a=0; a<4;a++){
+    b.c[a]=array.at(a+index);
+}
+
+return b.f;
+}
+
+void MainWindow::on_Robot_sel_clicked(bool checked)
+{
+    if (checked==true){
+        ui->RollBox->hide();
+        ui->YawBox->hide();
+        this->setWindowTitle("Robot Updater");
+
+        robot_sel=true;
+    }
+    else
+    {
+        ui->RollBox->show();
+        ui->YawBox->show();
+        this->setWindowTitle("Drone Updater");
+        robot_sel=false;
+    }
+}
+
+void MainWindow::on_checkBox_clicked(bool checked)
+{
+
+     serial->setDataTerminalReady(checked);
+}
+
+void MainWindow::on_lineEdit_returnPressed()
+{
+    QString textToSend=ui->lineEdit->text();
+    ui->lineEdit->clear();
+}
+
+
+
+void MainWindow::on_asc_show_clicked(bool checked)
+{
+    console->clear();
+}
+
+void MainWindow::setup_plot(){
+
+      demoName = "Real Time Data Demo";
+
+      // include this section to fully disable antialiasing for higher performance:
+      /*
+      customPlot->setNotAntialiasedElements(QCP::aeAll);
+      QFont font;
+      font.setStyleStrategy(QFont::NoAntialias);
+      customPlot->xAxis->setTickLabelFont(font);
+      customPlot->yAxis->setTickLabelFont(font);
+      customPlot->legend->setFont(font);
+      */
+      ->addGraph(); // blue line
+      customPlot->graph(0)->setPen(QPen(QColor(40, 110, 255)));
+      customPlot->addGraph(); // red line
+      customPlot->graph(1)->setPen(QPen(QColor(255, 110, 40)));
+
+      QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
+      timeTicker->setTimeFormat("%h:%m:%s");
+      customPlot->xAxis->setTicker(timeTicker);
+      customPlot->axisRect()->setupFullAxesBox();
+      customPlot->yAxis->setRange(-1.2, 1.2);
+
+      // make left and bottom axes transfer their ranges to right and top axes:
+      connect(customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->xAxis2, SLOT(setRange(QCPRange)));
+      connect(customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), customPlot->yAxis2, SLOT(setRange(QCPRange)));
+
+      // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
+      connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
+      dataTimer.start(0); // Interval 0 means to refresh as fast as possible
 
 }

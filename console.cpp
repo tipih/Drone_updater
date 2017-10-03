@@ -38,9 +38,10 @@
 
 #include <QtCore/QDebug>
 
+QByteArray stringToSend;
 Console::Console(QWidget *parent)
     : QPlainTextEdit(parent)
-    , localEchoEnabled(false)
+    , localEchoEnabled(true)
 {
     document()->setMaximumBlockCount(100);
     QPalette p = palette();
@@ -52,6 +53,7 @@ Console::Console(QWidget *parent)
 
 void Console::putData(const QByteArray &data)
 {
+
     insertPlainText(QString(data));
 
     QScrollBar *bar = verticalScrollBar();
@@ -70,12 +72,19 @@ void Console::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Left:
     case Qt::Key_Right:
     case Qt::Key_Up:
-    case Qt::Key_Down:
+    case Qt::Key_Down:        
         break;
+    case Qt::Key_Return:{
+        emit getData(stringToSend);
+        stringToSend.clear();
+        this->clear();
+        break;
+    }
     default:
+        stringToSend.append(e->text().toLocal8Bit());
         if (localEchoEnabled)
             QPlainTextEdit::keyPressEvent(e);
-        emit getData(e->text().toLocal8Bit());
+
     }
 }
 

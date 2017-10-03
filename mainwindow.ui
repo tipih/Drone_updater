@@ -262,7 +262,46 @@
       </rect>
      </property>
      <property name="text">
-      <string>TestSend</string>
+      <string>Send Update</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="Robot_sel">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>120</y>
+       <width>111</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Robot / Drone</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>80</y>
+       <width>87</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>DTR</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="asc_show">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>100</y>
+       <width>87</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Show Hex</string>
      </property>
     </widget>
    </widget>
@@ -270,9 +309,9 @@
     <property name="geometry">
      <rect>
       <x>360</x>
-      <y>160</y>
+      <y>220</y>
       <width>611</width>
-      <height>381</height>
+      <height>321</height>
      </rect>
     </property>
    </widget>
@@ -645,6 +684,16 @@
       </property>
      </widget>
     </widget>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>160</y>
+      <width>611</width>
+      <height>31</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
