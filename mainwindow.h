@@ -6,7 +6,7 @@
 #include <QSerialPortInfo>
 #include "console.h"
 #include <QLabel>
-#include "graph.h"
+#include "qcustomplot.h"
 
 namespace Ui {
 class MainWindow;
@@ -67,6 +67,7 @@ private:
 private:
     float converTofloat(QByteArray array,int index);
     void setup_plot();
+    QTimer dataTimer;
 
 
 private slots:
@@ -87,6 +88,7 @@ private slots:
  void on_checkBox_clicked(bool checked);
  void on_lineEdit_returnPressed();
  void on_asc_show_clicked(bool checked);
+ void realtimeDataSlot();
 };
 
 

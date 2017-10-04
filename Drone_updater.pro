@@ -6,7 +6,7 @@
 
 QT       += core gui serialport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = Drone_updater
 TEMPLATE = app
@@ -15,15 +15,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     console.cpp \
-    graph.cpp \
     qcustomplot.cpp
 
 
 HEADERS  += mainwindow.h \
     console.h \
-    graph.h \
     qcustomplot.h
 
 
-FORMS    += mainwindow.ui \
-    graph.ui
+FORMS    += mainwindow.ui
