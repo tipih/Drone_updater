@@ -21,20 +21,34 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addWidget(status);
 
     currentPid = new Pid_values();
+    loggingWindow = new LogWindow();
 
 
     setup_connections();
     get_serial_ports();
     fillPortsParameters();
     ui->serialPortList->setCurrentIndex(0);
+    loggingWindow->show();
+
+    loggingWindow->raise();
+    loggingWindow->activateWindow();
     setup_plot();
+
+
 
 
 }
 
+void   MainWindow::closeEvent(QCloseEvent*)
+{
+    qApp->quit();
+}
+
 MainWindow::~MainWindow()
 {
+
     delete ui;
+
 }
 
 void MainWindow::get_serial_ports()
@@ -476,6 +490,14 @@ void MainWindow::setup_plot(){
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
     dataTimer.start(0); // Interval 0 means to refresh as fast as possible
 
+
+    connect(this,SIGNAL(updateLog(float,float,float)),loggingWindow,SLOT(updateLogs(float,float,float)));
+
+}
+
+
+void MainWindow::SetupLog1(){
+
 }
 
 void MainWindow::realtimeDataSlot()
@@ -484,6 +506,8 @@ void MainWindow::realtimeDataSlot()
   // calculate two new data points:
   double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
   static double lastPointKey = 0;
+  emit updateLog(qSin(key)+qrand()/(double)RAND_MAX*1*qSin(key/0.2843),qSin(key)+qrand()/(double)RAND_MAX*0.7*qSin(key/0.4843),qSin(key)+qrand()/(double)RAND_MAX*0.5*qSin(key/0.5843));
+
   if (key-lastPointKey > 0.002) // at most add point every 2 ms
   {
     // add data to lines:

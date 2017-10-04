@@ -15,12 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     console.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+    logwindow.cpp
 
 
 HEADERS  += mainwindow.h \
     console.h \
-    qcustomplot.h
+    qcustomplot.h \
+    logwindow.h
 
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    logwindow.ui

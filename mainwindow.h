@@ -7,6 +7,7 @@
 #include "console.h"
 #include <QLabel>
 #include "qcustomplot.h"
+#include "logwindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ private:
     QSerialPort *serial;
     Console *console;
     QLabel *status;
+    LogWindow *loggingWindow;
 
     struct Settings {
         QString name;
@@ -89,6 +91,15 @@ private slots:
  void on_lineEdit_returnPressed();
  void on_asc_show_clicked(bool checked);
  void realtimeDataSlot();
+
+
+ void SetupLog1();
+
+ signals:
+ void updateLog(float l1,float l2,float l3);
+
+protected:
+ void closeEvent(QCloseEvent *);
 };
 
 
