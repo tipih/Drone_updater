@@ -285,7 +285,7 @@ void MainWindow::closeSerialPort()
 //! [6]
 void MainWindow::writeData(const QByteArray &data)
 {
-    qDebug()<<"Data to send "<<data;
+    qDebug()<<"Data to send "<<data.toHex();
     if (serial->isOpen())
         serial->write(data);
 }
@@ -410,8 +410,11 @@ void MainWindow::sendPidValue(){
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_i_value), sizeof(currentPid->pitch_i_value) );
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_d_value), sizeof(currentPid->pitch_d_value) );
     array.append(0xff);
-qDebug()<<array.count();
-qDebug()<<converTofloat(array,1);
+
+    qDebug()<<array.count();
+qDebug()<<"P "<<converTofloat(array,1);
+qDebug()<<"I "<<converTofloat(array,5);
+qDebug()<<"D" <<converTofloat(array,9);
 
 
 writeData(array);
@@ -527,6 +530,18 @@ ui->parityBox->setCurrentIndex(ui->parityBox->findText(parity));
 ui->stopBitsBox->setCurrentIndex(ui->stopBitsBox->findText(stopBits));
 ui->Robot_sel->setChecked(settings.value("serial/robot",true).toBool());
 
+ui->pitch_p_gain_spin->setValue(settings.value("pidsettings/pitchP","1.30").toFloat());
+ui->pitch_i_gain_spin->setValue(settings.value("pidsettings/pitchI","0.30").toFloat());
+ui->pitch_d_gain_spin->setValue(settings.value("pidsettings/pitchD","15.0").toFloat());
+
+ui->roll_p_gain_spin->setValue(settings.value("pidsettings/rollP","1.30").toFloat());
+ui->roll_i_gain_spin->setValue(settings.value("pidsettings/rollI","0.00").toFloat());
+ui->roll_d_gain_spin->setValue(settings.value("pidsettings/rollD","15.0").toFloat());
+
+ui->yaw_p_gain_spin->setValue(settings.value("pidsettings/yawP","4.30").toFloat());
+ui->yaw_i_gain_spin->setValue(settings.value("pidsettings/yawI","0.30").toFloat());
+ui->yaw_d_gain_spin->setValue(settings.value("pidsettings/yawD","0.00").toFloat());
+
 
 }
 
@@ -545,6 +560,16 @@ settings.setValue("serial/flowControl",ui->flowControlBox->currentText());
 settings.setValue("serial/parity", ui->parityBox->currentText());
 settings.setValue("serial/stopBits",ui->stopBitsBox->currentText());
 settings.setValue("serial/robot",ui->Robot_sel->isChecked());
+
+settings.setValue("pidsettings/pitchP",currentPid->pitch_p_value);
+settings.setValue("pidsettings/pitchI",currentPid->pitch_i_value);
+settings.setValue("pidsettings/pitchD",currentPid->pitch_d_value);
+settings.setValue("pidsettings/rollP",currentPid->roll_p_value);
+settings.setValue("pidsettings/rollI",currentPid->roll_i_value);
+settings.setValue("pidsettings/rollD",currentPid->roll_d_value);
+settings.setValue("pidsettings/yawP",currentPid->yaw_p_value);
+settings.setValue("pidsettings/yawI",currentPid->yaw_i_value);
+settings.setValue("pidsettings/yawD",currentPid->yaw_d_value);
 
 settings.sync();
 qDebug()<<"FlowControl "<<ui->flowControlBox->currentText();
