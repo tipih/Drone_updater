@@ -8,6 +8,7 @@
 #include <QLabel>
 #include "qcustomplot.h"
 #include "logwindow.h"
+#include <QSettings>
 
 namespace Ui {
 class MainWindow;
@@ -69,7 +70,10 @@ private:
 private:
     float converTofloat(QByteArray array,int index);
     void setup_plot();
+    void loadSettings();
+    void saveSettings();
     QTimer dataTimer;
+    QString m_sSettingsFile;
 
 
 private slots:
@@ -95,7 +99,9 @@ private slots:
 
  void SetupLog1();
 
- signals:
+ void on_Robot_sel_stateChanged(int arg1);
+
+signals:
  void updateLog(float l1,float l2,float l3);
 
 protected:

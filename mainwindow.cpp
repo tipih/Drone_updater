@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     serial = new QSerialPort(this);
     console = ui->uiConsole;
 
+
     status = new QLabel;
     ui->statusBar->addWidget(status);
 
@@ -28,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     get_serial_ports();
     fillPortsParameters();
     ui->serialPortList->setCurrentIndex(0);
+
+    loadSettings();
     loggingWindow->show();
 
     loggingWindow->raise();
@@ -41,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void   MainWindow::closeEvent(QCloseEvent*)
 {
+    saveSettings();
     qApp->quit();
 }
 
@@ -263,6 +267,8 @@ void MainWindow::updateSettings()
     currentSettings.stringFlowControl = ui->flowControlBox->currentText();
 
     currentSettings.localEchoEnabled = true;
+
+
 }
 
 //! [5]
@@ -449,6 +455,7 @@ void MainWindow::on_Robot_sel_clicked(bool checked)
     }
 }
 
+
 void MainWindow::on_checkBox_clicked(bool checked)
 {
 
@@ -499,6 +506,60 @@ void MainWindow::setup_plot(){
 void MainWindow::SetupLog1(){
 
 }
+void MainWindow::loadSettings(){
+ QSettings settings;
+
+QString comPort = settings.value    ("serial/comport","").toString();
+QString baudRate = settings.value   ("serial/baudRate","9600").toString();
+QString dataBit = settings.value    ("serial/dataBit","8").toString();
+QString flowControl = settings.value("serial/flowControl","None").toString();
+QString parity = settings.value     ("serial/parity","None").toString();
+QString stopBits = settings.value   ("serial/stopBits","1").toString();
+
+qDebug()<<comPort<<" "<<baudRate<<" "<<dataBit<<" "<<flowControl<<" "<<parity<<" "<<stopBits;
+
+
+ui->serialPortList->setCurrentIndex(ui->serialPortList->findText(comPort));
+ui->baudRateBox->setCurrentIndex(ui->baudRateBox->findText(baudRate));
+ui->dataBitsBox->setCurrentIndex(ui->dataBitsBox->findText(dataBit));
+ui->flowControlBox->setCurrentIndex(ui->flowControlBox->findText(flowControl));
+ui->parityBox->setCurrentIndex(ui->parityBox->findText(parity));
+ui->stopBitsBox->setCurrentIndex(ui->stopBitsBox->findText(stopBits));
+ui->Robot_sel->setChecked(settings.value("serial/robot",true).toBool());
+
+
+}
+
+void MainWindow::saveSettings(){
+    QSettings settings;
+qDebug()<<"Save Settings "<< ui->serialPortList->currentText();
+qDebug()<<"Baud Rate "<<ui->baudRateBox->currentText();
+
+
+
+
+settings.setValue("serial/comport", ui->serialPortList->currentText());
+settings.setValue("serial/baudRate",ui->baudRateBox->currentText());
+settings.setValue("serial/dataBit", ui->dataBitsBox->currentText());
+settings.setValue("serial/flowControl",ui->flowControlBox->currentText());
+settings.setValue("serial/parity", ui->parityBox->currentText());
+settings.setValue("serial/stopBits",ui->stopBitsBox->currentText());
+settings.setValue("serial/robot",ui->Robot_sel->isChecked());
+
+settings.sync();
+qDebug()<<"FlowControl "<<ui->flowControlBox->currentText();
+qDebug()<<"parity "<<ui->parityBox->currentText();
+qDebug()<<"DataBIts "<< ui->dataBitsBox->currentText();
+qDebug()<<"Settings status "<<settings.status();
+
+qDebug()<<settings.value("serial/baudRate").toString();
+qDebug()<<settings.value("serial/dataBit").toString();
+qDebug()<<settings.value("serial/flowControl").toString();
+qDebug()<<settings.value("serial/parity").toString();
+qDebug()<<settings.value("serial/stopBits").toString();
+
+settings.sync();
+}
 
 void MainWindow::realtimeDataSlot()
 {
@@ -536,4 +597,9 @@ void MainWindow::realtimeDataSlot()
     lastFpsKey = key;
     frameCount = 0;
   }
+}
+
+void MainWindow::on_Robot_sel_stateChanged(int arg1)
+{
+   emit on_Robot_sel_clicked(arg1);
 }
