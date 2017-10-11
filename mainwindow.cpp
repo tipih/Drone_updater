@@ -411,7 +411,7 @@ void MainWindow::sendPidValue(){
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_d_value), sizeof(currentPid->pitch_d_value) );
     array.append(0xff);
 
-    qDebug()<<array.count();
+qDebug()<<array.count();
 qDebug()<<"P "<<converTofloat(array,1);
 qDebug()<<"I "<<converTofloat(array,5);
 qDebug()<<"D" <<converTofloat(array,9);
