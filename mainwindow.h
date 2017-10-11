@@ -76,6 +76,7 @@ private:
     QString m_sSettingsFile;
 
 
+
 private slots:
  void update_comport_list();
  void new_port_selection(int index);

@@ -7,7 +7,7 @@
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
 static const char update_message_id[] =("00,01");
 bool robot_sel = 0;
-
+#define dataSize 14
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -295,22 +295,26 @@ void MainWindow::writeData(const QByteArray &data)
 void MainWindow::readData()
 {
 
-    int nCnt=serial->bytesAvailable();
+    //Wait ontil we have 14 bytes
+    if (serial->bytesAvailable() < dataSize-1)
+           //! If not, waiting for other bytes
+           return;
 
 
-    QByteArray data = serial->readAll();
+    //Only readin 14 bytes
+    QByteArray data = serial->read(dataSize);
 
-if ((nCnt==5)&&(data.at(3)==0x30)&&(data.at(4)==0x30))
-{
-    qDebug()<<data.toHex();
-}
+    //Now check that the array has a start and the end data correct
+    if((data.at(0)==0x01) && (data.at(13)==0xff))
+    {
+        //Do the convertion of the Data
+        qDebug()<<"Data 1 "<<converTofloat(data,1);
+        qDebug()<<"Data 2 "<<converTofloat(data,5);
+        qDebug()<<"Data 3 " <<converTofloat(data,9);
 
-    qDebug()<<data;
+    }
 
-    if(ui->asc_show->isChecked())
-        console->putData(data.toHex());
-    else
-         console->putData(data);
+
 }
 //! [7]
 
@@ -421,6 +425,8 @@ writeData(array);
 
 }
 
+
+
 float MainWindow::converTofloat(QByteArray array, int index){
 
 union UStuff
@@ -439,6 +445,8 @@ for (int a=0; a<4;a++){
 
 return b.f;
 }
+
+
 
 void MainWindow::on_Robot_sel_clicked(bool checked)
 {
@@ -571,6 +579,7 @@ settings.setValue("pidsettings/yawP",currentPid->yaw_p_value);
 settings.setValue("pidsettings/yawI",currentPid->yaw_i_value);
 settings.setValue("pidsettings/yawD",currentPid->yaw_d_value);
 
+
 settings.sync();
 qDebug()<<"FlowControl "<<ui->flowControlBox->currentText();
 qDebug()<<"parity "<<ui->parityBox->currentText();
@@ -586,9 +595,15 @@ qDebug()<<settings.value("serial/stopBits").toString();
 settings.sync();
 }
 
+
+
 void MainWindow::realtimeDataSlot()
 {
-  static QTime time(QTime::currentTime());
+
+
+#ifdef dummy_data
+
+    static QTime time(QTime::currentTime());
   // calculate two new data points:
   double key = time.elapsed()/1000.0; // time elapsed since start of demo, in seconds
   static double lastPointKey = 0;
@@ -622,7 +637,10 @@ void MainWindow::realtimeDataSlot()
     lastFpsKey = key;
     frameCount = 0;
   }
+#endif
 }
+
+
 
 void MainWindow::on_Robot_sel_stateChanged(int arg1)
 {
