@@ -314,7 +314,7 @@ void MainWindow::readData()
        // qDebug()<<"Data 1 "<<converTofloat(data,1);
        // qDebug()<<"Data 2 "<<converTofloat(data,5);
         //qDebug()<<"Data 3 " <<converTofloat(data,9);
-        emit updateLog(converTofloat(data,1),converTofloat(data,5),converTofloat(data,6));
+        emit updateLog(converTofloat(data,1),converTofloat(data,5),converTofloat(data,9));
 
     }
 

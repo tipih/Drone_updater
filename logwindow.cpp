@@ -37,9 +37,9 @@ void LogWindow::updateLogs(float lg1,float lg2,float lg3){
       lastPointKey = key;
     }
     // make key axis range scroll with the data (at a constant range size of 8):
-    ui->log1->xAxis->setRange(key, 8, Qt::AlignRight);
-    ui->log2->xAxis->setRange(key, 8, Qt::AlignRight);
-    ui->log3->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->log1->xAxis->setRange(key, 1, Qt::AlignRight);
+    ui->log2->xAxis->setRange(key, 1, Qt::AlignRight);
+    ui->log3->xAxis->setRange(key, 1, Qt::AlignRight);
     ui->log1->replot();
     ui->log2->replot();
     ui->log3->replot();
@@ -58,7 +58,7 @@ void LogWindow::setupLogs(){
     timeTicker->setTimeFormat("%h:%m:%s");
     ui->log1->xAxis->setTicker(timeTicker);
     ui->log1->axisRect()->setupFullAxesBox();
-    ui->log1->yAxis->setRange(-1.2, 1.2);
+    ui->log1->yAxis->setRange(-5.2, 5.2);
 
     /*Setup Grapf 2*/
     ui->log2->addGraph(); // blue line
