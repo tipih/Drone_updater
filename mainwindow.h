@@ -90,7 +90,7 @@ private slots:
  void updatePidValues();
  void sendPidValue();
 
- void on_pushButton_clicked();
+
  void on_Robot_sel_clicked(bool checked);
  void on_checkBox_clicked(bool checked);
  void on_lineEdit_returnPressed();
@@ -101,6 +101,9 @@ private slots:
  void SetupLog1();
 
  void on_Robot_sel_stateChanged(int arg1);
+
+
+ void on_ConnectBtn_clicked();
 
 signals:
  void updateLog(float l1,float l2,float l3);

@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->serialPortList->setCurrentIndex(0);
 
     loadSettings();
+    ui->debugFrame->hide();
     loggingWindow->show();
 
     loggingWindow->raise();
@@ -162,6 +163,7 @@ currentSettings.name=currentport.at(0);
 //Connect to selected serielport, with selected params
 void MainWindow::open_serialport()
 {
+    updateSettings();
 
     serial->setPortName(currentSettings.name);
     serial->setBaudRate(currentSettings.baudRate);
@@ -296,21 +298,23 @@ void MainWindow::readData()
 {
 
     //Wait ontil we have 14 bytes
-    if (serial->bytesAvailable() < dataSize-1)
-           //! If not, waiting for other bytes
+    if (serial->bytesAvailable() < dataSize-1){
+        qDebug()<<"Number of byte "<<  serial->bytesAvailable();
+        //! If not, waiting for other bytes
            return;
 
-
+}
     //Only readin 14 bytes
     QByteArray data = serial->read(dataSize);
-
+    qDebug()<<" data "<<data.toHex();
     //Now check that the array has a start and the end data correct
-    if((data.at(0)==0x01) && (data.at(13)==0xff))
+    if((data[0]==0x01) && (data[13]==0xff)) //MIGHT BE AND ERROR HERE
     {
         //Do the convertion of the Data
-        qDebug()<<"Data 1 "<<converTofloat(data,1);
-        qDebug()<<"Data 2 "<<converTofloat(data,5);
-        qDebug()<<"Data 3 " <<converTofloat(data,9);
+       // qDebug()<<"Data 1 "<<converTofloat(data,1);
+       // qDebug()<<"Data 2 "<<converTofloat(data,5);
+        //qDebug()<<"Data 3 " <<converTofloat(data,9);
+        emit updateLog(converTofloat(data,1),converTofloat(data,5),converTofloat(data,6));
 
     }
 
@@ -355,57 +359,7 @@ void MainWindow::updatePidValues(){
 
 
 
-void MainWindow::on_pushButton_clicked()
-{
 
-updatePidValues();
-//Build op the string for sending to the RFM2PI via seriel
-
-QString serial_string="";
-serial_string=update_message_id;
-
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_p_value);
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_i_value);
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->pitch_d_value);
-
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->roll_p_value);
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->roll_i_value);
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->roll_d_value);
-
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->yaw_p_value);
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->yaw_i_value);
-serial_string = serial_string+","+convert_float_to_hex_to_string(currentPid->yaw_d_value);
-
-serial_string=serial_string+","+"s";
-qDebug()<<"String to send "<<serial_string;
-QByteArray array (serial_string.toStdString().c_str());
-
-
-QByteArray source = QString("3f8ccccd").toUtf8();
-quint16 crc1 = qChecksum(source.data(), source.length());
-qDebug()<<"Bytearray "<<source.data();
-qDebug() <<"crc1" <<crc1;
-
-//1,1 = 0x3f8ccccd
-//float f = 1.1f;
-//convert_float_to_hex_to_string(f);
-//unsigned char *chptr;
-//chptr = (unsigned char *) &f;
-// qDebug() <<"1="<<*chptr++<<" 2="<<*chptr++<<"3="<<*chptr++<<"4="<<*chptr++;
-// QByteArray array(reinterpret_cast<const char*>(&f), sizeof(f));
-// qDebug() << array.size();
-//float f2;
-//f2 = *reinterpret_cast<const float*>(array.data());
-//qDebug()<<f2;
-//QString myString=QString::number(currentPid->pitch_p_value)+","+QString::number(currentPid->pitch_i_value)+","+QString::number(currentPid->pitch_d_value)+",s";
-//QByteArray packet (myString.toStdString().c_str());
-
-//char *p = (char*)currentPid; // cast it to char* to make a QByteArray
-//QByteArray packet(p, sizeof(Pid_values));
-
-writeData(array);
-
-}
 
 void MainWindow::sendPidValue(){
     QByteArray array;
@@ -477,6 +431,7 @@ void MainWindow::on_lineEdit_returnPressed()
 {
     QString textToSend=ui->lineEdit->text();
     ui->lineEdit->clear();
+    serial->write(textToSend.toUtf8());
 }
 
 
@@ -488,21 +443,6 @@ void MainWindow::on_asc_show_clicked(bool checked)
 
 void MainWindow::setup_plot(){
 
-
-    ui->customPlot->addGraph(); // blue line
-    ui->customPlot->graph(0)->setPen(QPen(QColor(40, 110, 255)));
-    ui->customPlot->addGraph(); // red line
-    ui->customPlot->graph(1)->setPen(QPen(QColor(255, 110, 40)));
-
-    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
-    timeTicker->setTimeFormat("%h:%m:%s");
-    ui->customPlot->xAxis->setTicker(timeTicker);
-    ui->customPlot->axisRect()->setupFullAxesBox();
-    ui->customPlot->yAxis->setRange(-1.2, 1.2);
-
-    // make left and bottom axes transfer their ranges to right and top axes:
-    connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->xAxis2, SLOT(setRange(QCPRange)));
-    connect(ui->customPlot->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->customPlot->yAxis2, SLOT(setRange(QCPRange)));
 
     // setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
     connect(&dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
@@ -645,4 +585,11 @@ void MainWindow::realtimeDataSlot()
 void MainWindow::on_Robot_sel_stateChanged(int arg1)
 {
    emit on_Robot_sel_clicked(arg1);
+}
+
+
+
+void MainWindow::on_ConnectBtn_clicked()
+{
+
 }
