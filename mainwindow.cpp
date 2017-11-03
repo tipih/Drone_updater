@@ -696,8 +696,8 @@ void MainWindow::on_SendTest_clicked()
     QByteArray testSendLong;
 
     testSendLong.append((char)0x04);
-    testSendLong.append(reinterpret_cast<const char*>(ptr),sizeof(ptr));
     testSendLong.append(reinterpret_cast<const char*>(ptr1),sizeof(ptr1));
+    testSendLong.append(reinterpret_cast<const char*>(ptr),sizeof(ptr));
     testSendLong.append(reinterpret_cast<const char*>(&c),sizeof(c));
     testSendLong.append((char)0xff);
 
