@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>981</width>
-    <height>630</height>
+    <height>714</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -256,7 +256,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>120</y>
+       <y>50</y>
        <width>111</width>
        <height>20</height>
       </rect>
@@ -269,7 +269,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>80</y>
+       <y>10</y>
        <width>87</width>
        <height>20</height>
       </rect>
@@ -282,13 +282,26 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>100</y>
+       <y>30</y>
        <width>87</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
       <string>Show Hex</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="sendData">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>70</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Send data</string>
      </property>
     </widget>
    </widget>
@@ -298,7 +311,7 @@
       <x>360</x>
       <y>220</y>
       <width>611</width>
-      <height>321</height>
+      <height>381</height>
      </rect>
     </property>
    </widget>
@@ -308,7 +321,7 @@
       <x>10</x>
       <y>160</y>
       <width>331</width>
-      <height>371</height>
+      <height>441</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -671,6 +684,41 @@
       </property>
      </widget>
     </widget>
+    <widget class="QLabel" name="robot_balance_label">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>380</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Balance Point</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="balance_spin_box">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>400</y>
+       <width>291</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <double>-5.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.600000000000000</double>
+     </property>
+    </widget>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
@@ -680,6 +728,19 @@
       <width>611</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="SendTest">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>610</y>
+      <width>321</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>test</string>
     </property>
    </widget>
   </widget>

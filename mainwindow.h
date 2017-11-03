@@ -105,6 +105,12 @@ private slots:
 
  void on_ConnectBtn_clicked();
 
+ void on_sendData_clicked(bool checked);
+
+ void on_balance_spin_box_valueChanged(double arg1);
+
+ void on_SendTest_clicked();
+
 signals:
  void updateLog(float l1,float l2,float l3);
 

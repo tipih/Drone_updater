@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QtEndian>
 
 
 #include <QDebug>
@@ -195,6 +196,7 @@ void MainWindow::open_serialport()
     }
 
   }
+    serial->flush();
 }
 
 
@@ -298,18 +300,24 @@ void MainWindow::readData()
 {
 
     //Wait ontil we have 14 bytes
-    if (serial->bytesAvailable() < dataSize-1){
-        qDebug()<<"Number of byte "<<  serial->bytesAvailable();
+    if (serial->bytesAvailable() < dataSize){
+      //  qDebug()<<"Number of byte "<<  serial->bytesAvailable();
         //! If not, waiting for other bytes
            return;
 
 }
     //Only readin 14 bytes
+    //qDebug()<<"Data to read "<<serial->bytesAvailable();
     QByteArray data = serial->read(dataSize);
-    qDebug()<<" data "<<data.toHex();
+    //qDebug()<<" data "<<data.toHex();
     //Now check that the array has a start and the end data correct
-    if((data[0]==0x01) && (data[13]==0xff)) //MIGHT BE AND ERROR HERE
+    console->putData(data.toHex()+'\n');
+
+
+
+    if((data[0]==0x10) && (data[13]==0xff)) //MIGHT BE AND ERROR HERE
     {
+
         //Do the convertion of the Data
        // qDebug()<<"Data 1 "<<converTofloat(data,1);
        // qDebug()<<"Data 2 "<<converTofloat(data,5);
@@ -317,8 +325,28 @@ void MainWindow::readData()
         emit updateLog(converTofloat(data,1),converTofloat(data,5),converTofloat(data,9));
 
     }
+    else if((data[0]==0x01) && (data[13]==0xff)) //PID Data validation from Robot
+    {
+        //Do the convertion of the Data
+        qDebug()<<"Data 1 "<<converTofloat(data,1);
+        qDebug()<<"Data 2 "<<converTofloat(data,5);
+        qDebug()<<"Data 3 " <<converTofloat(data,9);
+        ui->pitch_p_gain_spin->setValue(converTofloat(data,1));
+        ui->pitch_i_gain_spin->setValue(converTofloat(data,5));
+        ui->pitch_d_gain_spin->setValue(converTofloat(data,9));
 
-
+    }
+    else if((data[0]==0x02) && (data[13]==0xff)) //PID Data validation from Robot
+    {
+    ui->balance_spin_box->setValue(converTofloat(data,1));
+    }
+    else
+    {
+     qDebug()<<"Error in data";
+     serial->flush();
+     serial->clear();
+     data.clear();
+    }
 }
 //! [7]
 
@@ -363,7 +391,7 @@ void MainWindow::updatePidValues(){
 
 void MainWindow::sendPidValue(){
     QByteArray array;
-    array.append(0x01);
+    array.append((char)0x00);
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_p_value), sizeof(currentPid->pitch_p_value) );
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_i_value), sizeof(currentPid->pitch_i_value) );
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_d_value), sizeof(currentPid->pitch_d_value) );
@@ -407,6 +435,8 @@ void MainWindow::on_Robot_sel_clicked(bool checked)
     if (checked==true){
         ui->RollBox->hide();
         ui->YawBox->hide();
+        ui->robot_balance_label->show();
+        ui->balance_spin_box->show();
         this->setWindowTitle("Robot Updater");
 
         robot_sel=true;
@@ -415,6 +445,9 @@ void MainWindow::on_Robot_sel_clicked(bool checked)
     {
         ui->RollBox->show();
         ui->YawBox->show();
+        ui->robot_balance_label->hide();
+        ui->balance_spin_box->hide();
+
         this->setWindowTitle("Drone Updater");
         robot_sel=false;
     }
@@ -591,5 +624,90 @@ void MainWindow::on_Robot_sel_stateChanged(int arg1)
 
 void MainWindow::on_ConnectBtn_clicked()
 {
+
+}
+
+void MainWindow::on_sendData_clicked(bool checked)
+{
+    QByteArray array;
+    array.append((char)0x02);
+    if (checked==true){
+    array.append((char)0x01);
+    }
+    else
+   {
+        array.append((char)0x00);
+   }
+
+
+    array.append((char)0x00);
+    array.append((char)0x00);
+    array.append((char)0x00);
+
+    array.append((char)0x00);
+    array.append((char)0x00);
+    array.append((char)0x00);
+    array.append((char)0x00);
+
+    array.append((char)0x00);
+    array.append((char)0x00);
+    array.append((char)0x00);
+    array.append((char)0x00);
+
+    array.append(0xff);
+qDebug()<<array.toHex();
+writeData(array);
+serial->flush();
+}
+
+void MainWindow::on_balance_spin_box_valueChanged(double arg1)
+{
+
+QByteArray spin_array;
+float spin = ui->balance_spin_box->value();
+spin_array.append((char)0x03);
+spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+spin_array.append((char)0xff);
+writeData(spin_array);
+serial->flush();
+
+}
+
+void MainWindow::on_SendTest_clicked()
+{
+
+
+    quint32 a=1;
+    quint32 b=2;
+    quint32 c=3;
+    float a1 = 1.1;
+    unsigned char *ptr;
+    unsigned char *ptr1;
+    unsigned char mArray[4];
+    unsigned char mArray1[4];
+    ptr=mArray;
+    ptr1=mArray1;
+
+    qToBigEndian<float>(a1, ptr);
+    qToLittleEndian<float>(a1,ptr1);
+
+    QByteArray testSendLong;
+
+    testSendLong.append((char)0x04);
+    testSendLong.append(reinterpret_cast<const char*>(ptr),sizeof(ptr));
+    testSendLong.append(reinterpret_cast<const char*>(ptr1),sizeof(ptr1));
+    testSendLong.append(reinterpret_cast<const char*>(&c),sizeof(c));
+    testSendLong.append((char)0xff);
+
+
+
+    qDebug()<<"output of test="<<ptr;
+
+    qDebug()<<testSendLong.size();
+    writeData(testSendLong);
+    serial->flush();
+
 
 }
