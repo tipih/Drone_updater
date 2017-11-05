@@ -315,7 +315,7 @@ void MainWindow::readData()
 
 
 
-    if((data[0]==0x10) && (data[13]==0xff)) //MIGHT BE AND ERROR HERE
+    if((data[0]==(char)0x10) && (data[13]==(char)0xff)) //MIGHT BE AND ERROR HERE
     {
 
         //Do the convertion of the Data
@@ -325,7 +325,7 @@ void MainWindow::readData()
         emit updateLog(converTofloat(data,1),converTofloat(data,5),converTofloat(data,9));
 
     }
-    else if((data[0]==0x01) && (data[13]==0xff)) //PID Data validation from Robot
+    else if((data[0]==(char)0x01) && (data[13]==(char)0xff)) //PID Data validation from Robot
     {
         //Do the convertion of the Data
         qDebug()<<"Data 1 "<<converTofloat(data,1);
@@ -336,7 +336,7 @@ void MainWindow::readData()
         ui->pitch_d_gain_spin->setValue(converTofloat(data,9));
 
     }
-    else if((data[0]==0x02) && (data[13]==0xff)) //PID Data validation from Robot
+    else if((data[0]==(char)0x02) && (data[13]==(char)0xff)) //PID Data validation from Robot
     {
     ui->balance_spin_box->setValue(converTofloat(data,1));
     }
