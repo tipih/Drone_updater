@@ -328,6 +328,7 @@ void MainWindow::readData()
     else if((data[0]==(char)0x01) && (data[13]==(char)0xff)) //PID Data validation from Robot
     {
         //Do the convertion of the Data
+        qDebug()<<"Got PID data from the ROBOT update everything";
         qDebug()<<"Data 1 "<<converTofloat(data,1);
         qDebug()<<"Data 2 "<<converTofloat(data,5);
         qDebug()<<"Data 3 " <<converTofloat(data,9);
@@ -391,16 +392,12 @@ void MainWindow::updatePidValues(){
 
 void MainWindow::sendPidValue(){
     QByteArray array;
+
     array.append((char)0x00);
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_p_value), sizeof(currentPid->pitch_p_value) );
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_i_value), sizeof(currentPid->pitch_i_value) );
     array.append( reinterpret_cast<const char*>(&currentPid->pitch_d_value), sizeof(currentPid->pitch_d_value) );
     array.append(0xff);
-
-qDebug()<<array.count();
-qDebug()<<"P "<<converTofloat(array,1);
-qDebug()<<"I "<<converTofloat(array,5);
-qDebug()<<"D" <<converTofloat(array,9);
 
 
 writeData(array);
@@ -630,7 +627,7 @@ void MainWindow::on_ConnectBtn_clicked()
 void MainWindow::on_sendData_clicked(bool checked)
 {
     QByteArray array;
-    array.append((char)0x02);
+    array.append((char)0x04); //Message ID=4 for turning on off the data
     if (checked==true){
     array.append((char)0x01);
     }
@@ -665,9 +662,9 @@ void MainWindow::on_balance_spin_box_valueChanged(double arg1)
 
 QByteArray spin_array;
 float spin = ui->balance_spin_box->value();
-spin_array.append((char)0x03);
-spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
-spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+spin_array.append((char)0x03); //Message ID = 3
+spin_array.append("\x00\x00\x00\x00",4);
+spin_array.append("\x00\x00\x00\x00",4);
 spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
 spin_array.append((char)0xff);
 writeData(spin_array);
@@ -678,34 +675,13 @@ serial->flush();
 void MainWindow::on_SendTest_clicked()
 {
 
-
-    quint32 a=1;
-    quint32 b=2;
-    quint32 c=3;
-    float a1 = 1.1;
-    unsigned char *ptr;
-    unsigned char *ptr1;
-    unsigned char mArray[4];
-    unsigned char mArray1[4];
-    ptr=mArray;
-    ptr1=mArray1;
-
-    qToBigEndian<float>(a1, ptr);
-    qToLittleEndian<float>(a1,ptr1);
-
     QByteArray testSendLong;
 
-    testSendLong.append((char)0x04);
-    testSendLong.append(reinterpret_cast<const char*>(ptr1),sizeof(ptr1));
-    testSendLong.append(reinterpret_cast<const char*>(ptr),sizeof(ptr));
-    testSendLong.append(reinterpret_cast<const char*>(&c),sizeof(c));
+    testSendLong.append((char)0x01); //Message ID=1 for storing to eeprom
+    testSendLong.append("\x00\x00\x00\x00",4);
+    testSendLong.append("\x00\x00\x00\x00",4);
+    testSendLong.append("\x00\x00\x00\x00",4);
     testSendLong.append((char)0xff);
-
-
-
-    qDebug()<<"output of test="<<ptr;
-
-    qDebug()<<testSendLong.size();
     writeData(testSendLong);
     serial->flush();
 
