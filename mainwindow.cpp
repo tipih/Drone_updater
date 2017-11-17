@@ -496,6 +496,7 @@ QString dataBit = settings.value    ("serial/dataBit","8").toString();
 QString flowControl = settings.value("serial/flowControl","None").toString();
 QString parity = settings.value     ("serial/parity","None").toString();
 QString stopBits = settings.value   ("serial/stopBits","1").toString();
+bool DTR =settings.value("serial/dtr",false).toBool();
 
 qDebug()<<comPort<<" "<<baudRate<<" "<<dataBit<<" "<<flowControl<<" "<<parity<<" "<<stopBits;
 
@@ -507,6 +508,7 @@ ui->flowControlBox->setCurrentIndex(ui->flowControlBox->findText(flowControl));
 ui->parityBox->setCurrentIndex(ui->parityBox->findText(parity));
 ui->stopBitsBox->setCurrentIndex(ui->stopBitsBox->findText(stopBits));
 ui->Robot_sel->setChecked(settings.value("serial/robot",true).toBool());
+ui->checkBox->setChecked(DTR);
 
 ui->pitch_p_gain_spin->setValue(settings.value("pidsettings/pitchP","1.30").toFloat());
 ui->pitch_i_gain_spin->setValue(settings.value("pidsettings/pitchI","0.30").toFloat());
@@ -538,6 +540,7 @@ settings.setValue("serial/flowControl",ui->flowControlBox->currentText());
 settings.setValue("serial/parity", ui->parityBox->currentText());
 settings.setValue("serial/stopBits",ui->stopBitsBox->currentText());
 settings.setValue("serial/robot",ui->Robot_sel->isChecked());
+settings.setValue("serial/dtr",ui->checkBox->isChecked());
 
 settings.setValue("pidsettings/pitchP",currentPid->pitch_p_value);
 settings.setValue("pidsettings/pitchI",currentPid->pitch_i_value);
@@ -685,5 +688,10 @@ void MainWindow::on_SendTest_clicked()
     writeData(testSendLong);
     serial->flush();
 
+
+}
+
+void MainWindow::on_checkBox_clicked()
+{
 
 }
