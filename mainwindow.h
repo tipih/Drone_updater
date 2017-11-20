@@ -111,7 +111,11 @@ private slots:
 
  void on_SendTest_clicked();
 
+<<<<<<< HEAD
  void on_forward_pressed();
+=======
+ void on_checkBox_clicked();
+>>>>>>> 201927ad458d939226eba6564998591dab380467
 
 signals:
  void updateLog(float l1,float l2,float l3);
