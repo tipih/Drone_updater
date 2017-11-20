@@ -434,7 +434,9 @@ void MainWindow::on_Robot_sel_clicked(bool checked)
         ui->YawBox->hide();
         ui->robot_balance_label->show();
         ui->balance_spin_box->show();
+        ui->RoboControl->show();
         this->setWindowTitle("Robot Updater");
+
 
         robot_sel=true;
     }
@@ -444,6 +446,8 @@ void MainWindow::on_Robot_sel_clicked(bool checked)
         ui->YawBox->show();
         ui->robot_balance_label->hide();
         ui->balance_spin_box->hide();
+        ui->RoboControl->hide();
+
 
         this->setWindowTitle("Drone Updater");
         robot_sel=false;
@@ -685,5 +689,20 @@ void MainWindow::on_SendTest_clicked()
     writeData(testSendLong);
     serial->flush();
 
+
+}
+
+void MainWindow::on_forward_pressed()
+{
+  //Control uses msg ID6 and byte 1 as direction byte 2 as speed
+    QByteArray sendControl;
+    sendControl.append((char)0x06); //Message ID=6 for storing to eeprom
+    sendControl.append((char)0x01);
+    sendControl.append("\x00\x00\x00",3);
+    sendControl.append("\x00\x00\x00\x00",4);
+    sendControl.append("\x00\x00\x00\x00",4);
+    sendControl.append((char)0xff);
+    writeData(sendControl);
+    serial->flush();
 
 }
