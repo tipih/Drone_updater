@@ -22,6 +22,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+
 private:
     Ui::MainWindow *ui;
     QList<QStringList> listOfPorts;
@@ -30,6 +32,14 @@ private:
     Console *console;
     QLabel *status;
     LogWindow *loggingWindow;
+
+    enum Direction {
+        stop,
+        forward,
+        backward,
+        left,
+        right
+    };
 
     struct Settings {
         QString name;
@@ -111,17 +121,24 @@ private slots:
 
  void on_SendTest_clicked();
 
-<<<<<<< HEAD
+
  void on_forward_pressed();
-=======
+ void on_backward_pressed();
+ void on_left_pressed();
+ void on_right_pressed();
+ void on_release_buttons();
+
  void on_checkBox_clicked();
->>>>>>> 201927ad458d939226eba6564998591dab380467
+
 
 signals:
  void updateLog(float l1,float l2,float l3);
 
 protected:
  void closeEvent(QCloseEvent *);
+ void sendControlSignal(char direction);
+
+
 };
 
 

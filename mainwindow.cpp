@@ -112,6 +112,10 @@ void MainWindow::setup_connections()
     connect(ui->yaw_p_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
     connect(ui->yaw_i_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
     connect(ui->yaw_d_gain_spin,SIGNAL(valueChanged(double)),this,SLOT(updatePidValues()));
+    connect(ui->forward,SIGNAL(released()),this,SLOT(on_release_buttons()));
+    connect(ui->backward,SIGNAL(released()),this,SLOT(on_release_buttons()));
+    connect(ui->left,SIGNAL(released()),this,SLOT(on_release_buttons()));
+    connect(ui->right,SIGNAL(released()),this,SLOT(on_release_buttons()));
 }
 
 QString MainWindow::convert_float_to_hex_to_string(float value)
@@ -186,7 +190,7 @@ void MainWindow::open_serialport()
         console->setLocalEchoEnabled(true);
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6").arg(serial->portName()).arg(serial->baudRate()).arg(serial->flowControl()));
         ui->ConnectBtn->setText("Disconnect");
-        ui->checkBox->setChecked(serial->isDataTerminalReady());
+        serial->setDataTerminalReady(ui->checkBox->isChecked());
 
 
     } else {
@@ -435,6 +439,7 @@ void MainWindow::on_Robot_sel_clicked(bool checked)
         ui->robot_balance_label->show();
         ui->balance_spin_box->show();
         ui->RoboControl->show();
+
         this->setWindowTitle("Robot Updater");
 
 
@@ -525,6 +530,7 @@ ui->roll_d_gain_spin->setValue(settings.value("pidsettings/rollD","15.0").toFloa
 ui->yaw_p_gain_spin->setValue(settings.value("pidsettings/yawP","4.30").toFloat());
 ui->yaw_i_gain_spin->setValue(settings.value("pidsettings/yawI","0.30").toFloat());
 ui->yaw_d_gain_spin->setValue(settings.value("pidsettings/yawD","0.00").toFloat());
+serial->setDataTerminalReady(DTR);
 
 
 }
@@ -694,21 +700,49 @@ void MainWindow::on_SendTest_clicked()
 
 
 }
-
+//*******************************************************************************
+//Control section
 
 void MainWindow::on_forward_pressed()
 {
-  //Control uses msg ID6 and byte 1 as direction byte 2 as speed
-    QByteArray sendControl;
-    sendControl.append((char)0x06); //Message ID=6 for storing to eeprom
-    sendControl.append((char)0x01);
-    sendControl.append("\x00\x00\x00",3);
-    sendControl.append("\x00\x00\x00\x00",4);
-    sendControl.append("\x00\x00\x00\x00",4);
-    sendControl.append((char)0xff);
-    writeData(sendControl);
-    serial->flush();
+sendControlSignal(Direction::forward);
 }
+void MainWindow::on_backward_pressed(){
+    sendControlSignal(Direction::backward);
+}
+
+void MainWindow::on_left_pressed()
+{
+   sendControlSignal(Direction::left);
+}
+
+void MainWindow::on_right_pressed()
+{
+    sendControlSignal(Direction::right);
+}
+
+void MainWindow::on_release_buttons(){
+   sendControlSignal(Direction::stop);
+}
+
+
+
+
+void MainWindow::sendControlSignal(char direction){
+    //Control uses msg ID6 and byte 1 as direction byte 2 as speed
+      qDebug()<<direction;
+      QByteArray sendControl;
+      sendControl.append((char)0x06); //Message ID=6 for storing to eeprom
+      sendControl.append((char)direction);
+      sendControl.append("\x00\x00\x00",3);
+      sendControl.append("\x00\x00\x00\x00",4);
+      sendControl.append("\x00\x00\x00\x00",4);
+      sendControl.append((char)0xff);
+      writeData(sendControl);
+      serial->flush();
+}
+
+
 
 void MainWindow::on_checkBox_clicked()
 {
