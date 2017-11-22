@@ -304,6 +304,19 @@
       <string>Send data</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="sendDebug">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>90</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Send Debug Data</string>
+     </property>
+    </widget>
    </widget>
    <widget class="Console" name="uiConsole">
     <property name="geometry">
@@ -908,7 +921,7 @@
      <x>0</x>
      <y>0</y>
      <width>981</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

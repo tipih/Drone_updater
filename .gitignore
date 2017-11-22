@@ -4,6 +4,8 @@
 
 Makefile.Debug
 Makefile.Release
+Drone_updater.pro.user*
+
 
 
 #Visual Studio files

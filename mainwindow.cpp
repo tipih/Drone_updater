@@ -748,3 +748,29 @@ void MainWindow::on_checkBox_clicked()
 {
 
 }
+
+void MainWindow::on_sendDebug_clicked()
+{
+
+}
+
+
+
+void MainWindow::on_sendDebug_clicked(bool checked)
+{
+    QByteArray array;
+    array.append((char)0x08); //Message ID=8 for turning on off the data
+    if (checked==true){
+    array.append((char)0x01);
+    }
+    else
+   {
+        array.append((char)0x00);
+   }
+    array.append("\x00\x00\x00",3);
+    array.append("\x00\x00\x00\x00",4);
+    array.append("\x00\x00\x00\x00",4);
+    array.append((char)0xff);
+    writeData(array);
+    serial->flush();
+}

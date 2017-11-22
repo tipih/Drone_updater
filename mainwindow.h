@@ -131,6 +131,12 @@ private slots:
  void on_checkBox_clicked();
 
 
+ void on_sendDebug_clicked();
+
+
+
+ void on_sendDebug_clicked(bool checked);
+
 signals:
  void updateLog(float l1,float l2,float l3);
 
