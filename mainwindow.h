@@ -127,15 +127,12 @@ private slots:
  void on_left_pressed();
  void on_right_pressed();
  void on_release_buttons();
-
- void on_checkBox_clicked();
-
-
- void on_sendDebug_clicked();
-
-
-
  void on_sendDebug_clicked(bool checked);
+ void on_deadband_valueChanged(double arg1);
+
+ void on_engienoffset_valueChanged(double arg1);
+
+ void on_angleoffset_valueChanged(double arg1);
 
 signals:
  void updateLog(float l1,float l2,float l3);

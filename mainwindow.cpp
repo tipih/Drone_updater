@@ -477,6 +477,7 @@ void MainWindow::on_lineEdit_returnPressed()
 
 void MainWindow::on_asc_show_clicked(bool checked)
 {
+    Q_UNUSED(checked);
     console->clear();
 }
 
@@ -536,7 +537,7 @@ serial->setDataTerminalReady(DTR);
 }
 
 void MainWindow::saveSettings(){
-    QSettings settings;
+QSettings settings;
 qDebug()<<"Save Settings "<< ui->serialPortList->currentText();
 qDebug()<<"Baud Rate "<<ui->baudRateBox->currentText();
 
@@ -672,10 +673,10 @@ serial->flush();
 
 void MainWindow::on_balance_spin_box_valueChanged(double arg1)
 {
-
+Q_UNUSED(arg1);
 QByteArray spin_array;
 float spin = ui->balance_spin_box->value();
-spin_array.append((char)0x03); //Message ID = 3
+spin_array.append((char)0x09); //Message ID = 9
 spin_array.append("\x00\x00\x00\x00",4);
 spin_array.append("\x00\x00\x00\x00",4);
 spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
@@ -685,6 +686,53 @@ serial->flush();
 
 }
 
+void MainWindow::on_deadband_valueChanged(double arg1)
+{
+Q_UNUSED(arg1);
+    QByteArray spin_array;
+    float spin =ui->deadband->value();
+    spin_array.append((char)0x03); //Message ID = 3
+    spin_array.append("\x00\x00\x00\x00",4);
+    spin_array.append("\x00\x00\x00\x00",4);
+    spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+    spin_array.append((char)0xff);
+    writeData(spin_array);
+    serial->flush();
+}
+
+
+void MainWindow::on_engienoffset_valueChanged(double arg1)
+{
+    Q_UNUSED(arg1);
+    QByteArray spin_array;
+    float spin =ui->engienoffset->value();
+    spin_array.append((char)0x010); //Message ID = 10
+    spin_array.append("\x00\x00\x00\x00",4);
+    spin_array.append("\x00\x00\x00\x00",4);
+    spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+    spin_array.append((char)0xff);
+    writeData(spin_array);
+    serial->flush();
+}
+
+void MainWindow::on_angleoffset_valueChanged(double arg1)
+{
+    Q_UNUSED(arg1);
+    QByteArray spin_array;
+    float spin =ui->angleoffset->value();
+    spin_array.append((char)0x011); //Message ID = 11
+    spin_array.append("\x00\x00\x00\x00",4);
+    spin_array.append("\x00\x00\x00\x00",4);
+    spin_array.append( reinterpret_cast<const char*>(&spin), sizeof(spin) );
+    spin_array.append((char)0xff);
+    writeData(spin_array);
+    serial->flush();
+}
+
+
+
+
+//****************************************************************************************
 void MainWindow::on_SendTest_clicked()
 {
 
@@ -744,15 +792,7 @@ void MainWindow::sendControlSignal(char direction){
 
 
 
-void MainWindow::on_checkBox_clicked()
-{
 
-}
-
-void MainWindow::on_sendDebug_clicked()
-{
-
-}
 
 
 
@@ -774,3 +814,11 @@ void MainWindow::on_sendDebug_clicked(bool checked)
     writeData(array);
     serial->flush();
 }
+
+
+
+
+
+
+
+

@@ -95,9 +95,9 @@
     <widget class="QFrame" name="debugFrame">
      <property name="geometry">
       <rect>
-       <x>650</x>
+       <x>751</x>
        <y>10</y>
-       <width>301</width>
+       <width>200</width>
        <height>131</height>
       </rect>
      </property>
@@ -718,9 +718,9 @@
      <widget class="QDoubleSpinBox" name="balance_spin_box">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>40</y>
-        <width>291</width>
+        <x>120</x>
+        <y>20</y>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -753,9 +753,9 @@
      <widget class="QDoubleSpinBox" name="deadband">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>291</width>
+        <x>120</x>
+        <y>50</y>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -766,11 +766,11 @@
        <double>20.000000000000000</double>
       </property>
      </widget>
-     <widget class="QLabel" name="robot_balance_label_2">
+     <widget class="QLabel" name="robot_deadband_label">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>50</y>
         <width>91</width>
         <height>16</height>
        </rect>
@@ -782,9 +782,9 @@
      <widget class="QDoubleSpinBox" name="engienoffset">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>140</y>
-        <width>291</width>
+        <x>120</x>
+        <y>80</y>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -795,11 +795,11 @@
        <double>0.950000000000000</double>
       </property>
      </widget>
-     <widget class="QLabel" name="robot_balance_label_3">
+     <widget class="QLabel" name="robot_engienoffset_label">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>120</y>
+        <y>80</y>
         <width>91</width>
         <height>16</height>
        </rect>
@@ -885,6 +885,35 @@
        </property>
       </widget>
      </widget>
+     <widget class="QLabel" name="robot_anglechange_label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>91</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Angle change</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="angleoffset">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>110</y>
+        <width>181</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <double>0.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.520000000000000</double>
+      </property>
+     </widget>
     </widget>
     <zorder>PicthBox</zorder>
     <zorder>YawBox</zorder>
@@ -914,6 +943,12 @@
      <string>Save To EEprom</string>
     </property>
    </widget>
+   <zorder>frame</zorder>
+   <zorder>uiConsole</zorder>
+   <zorder>frame_3</zorder>
+   <zorder>lineEdit</zorder>
+   <zorder>SendTest</zorder>
+   <zorder>robot_engienoffset_label</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

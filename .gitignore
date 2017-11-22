@@ -5,6 +5,11 @@
 Makefile.Debug
 Makefile.Release
 Drone_updater.pro.user*
+Drone_updater.pro.user
+mainwindow.cpp.autosave
+ui_mainwindow.h
+
+
 
 
 
