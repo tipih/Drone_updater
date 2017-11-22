@@ -48,8 +48,11 @@ public:
     explicit Console(QWidget *parent = 0);
 
     void putData(const QByteArray &data);
+    void writeText(QString text);
 
     void setLocalEchoEnabled(bool set);
+
+public slots:
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);

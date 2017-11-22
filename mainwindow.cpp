@@ -345,6 +345,12 @@ void MainWindow::readData()
     {
     ui->balance_spin_box->setValue(converTofloat(data,1));
     }
+    else if((data[0]==(char)0x03) && (data[13]==(char)0xff)) //PID Data validation from Robot
+    {
+     qDebug()<<"Debug data from Robot";
+     console->writeText("This is a test "+QString::number(0x10)+"\n");
+
+    }
     else
     {
      qDebug()<<"Error in data";
@@ -352,6 +358,7 @@ void MainWindow::readData()
      serial->clear();
      data.clear();
     }
+
 }
 //! [7]
 
@@ -688,7 +695,7 @@ serial->flush();
 
 void MainWindow::on_deadband_valueChanged(double arg1)
 {
-Q_UNUSED(arg1);
+    Q_UNUSED(arg1);
     QByteArray spin_array;
     float spin =ui->deadband->value();
     spin_array.append((char)0x03); //Message ID = 3
@@ -754,6 +761,7 @@ void MainWindow::on_SendTest_clicked()
 void MainWindow::on_forward_pressed()
 {
 sendControlSignal(Direction::forward);
+
 }
 void MainWindow::on_backward_pressed(){
     sendControlSignal(Direction::backward);

@@ -413,7 +413,7 @@
        <double>0.100000000000000</double>
       </property>
       <property name="value">
-       <double>1.300000000000000</double>
+       <double>8.900000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="pitch_i_gain_spin">
@@ -432,10 +432,10 @@
        <double>30.000000000000000</double>
       </property>
       <property name="singleStep">
-       <double>0.100000000000000</double>
+       <double>0.050000000000000</double>
       </property>
       <property name="value">
-       <double>0.050000000000000</double>
+       <double>0.350000000000000</double>
       </property>
      </widget>
      <widget class="QDoubleSpinBox" name="pitch_d_gain_spin">
@@ -457,7 +457,7 @@
        <double>0.100000000000000</double>
       </property>
       <property name="value">
-       <double>15.000000000000000</double>
+       <double>0.450000000000000</double>
       </property>
      </widget>
     </widget>
